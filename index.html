@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>💻 Confronto computer</title>
+        <style>
+            * {
+                background-color: rgb(32, 30, 32);
+                color: thistle;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .best{
+                background-color: rgb(0, 128, 0);
+            }
+            .worst{
+                background-color: rgb(196, 0, 0);
+            }
+            img {
+                width: 100px;
+            }
+
+            table {
+                width: 100%;
+            }
+        </style>
+        <script src="script/jquerymin.js"></script>
+        <script>
+
+            $(document).ready(function () 
+            {
+                $('img').mouseover(function () 
+                {
+                    $(this).animate({ "width": "200px" }, 100)
+                })
+
+                $('img').mouseleave(function () 
+                {
+                    $(this).animate({ "width": "100px" }, 100)
+                })
+
+                $('#intestazione').children().css("backgroundColor", "white")
+                $('#intestazione').children().css("color", "black")
+                
+                $('td').each(function () 
+                {
+                    if (this.innerHTML.startsWith("Sì")) 
+                    {
+                        $(this).attr("class","best")
+                    }
+                    else if (this.innerHTML.startsWith("No")) 
+                    {
+                        $(this).attr("class","worst")
+                    }
+                })
+
+                calcolaPrezzoSenzaIva()
+                calcolaTotali()
+                evidenzia()
+            })
+
+            function calcolaPrezzoSenzaIva()
+            {
+                var tr = document.getElementById('trPrezzi')
+
+                var inizio = 2
+                var fine = tr.children.length - 1
+
+                var prezzi = []
+
+                Array.from(tr.children).forEach(function(item, i)
+                {
+                    if(i>1)
+                    {
+                        prezzi.push((parseInt(item.innerHTML) / 1.22).toFixed(2))
+                    } 
+                })
+
+                var nuovoTr = document.createElement('tr')
+                $(nuovoTr).append('<td>PREZZO SENZA IVA:</td>')
+                $(nuovoTr).append('<td>-</td>')
+                prezzi.forEach(function(item, i)
+                {
+                    $(nuovoTr).append('<td>' + item +' €</td>')
+                })
+                $('table').append(nuovoTr)
+
+
+                prezzi = prezzi.map(function(item, i)
+                {
+                    return item / 2
+                })
+
+
+                nuovoTr = document.createElement('tr')
+                $(nuovoTr).append('<td>PREZZO DIMEZZATO:</td>')
+                $(nuovoTr).append('<td>-</td>')
+                prezzi.forEach(function(item, i)
+                {
+                    $(nuovoTr).append('<td>' + item +' €</td>')
+                })
+                $('table').append(nuovoTr)
+            }
+
+            function calcolaTotali() 
+            {
+                
+                $('table').append('<tr id="valutazioni"><td>VALUTAZIONE:</td></tr>')
+                
+                var totale = 0
+                var verdi = 0
+                var rossi = 0
+
+                for (var i = 1; i < $('tr').eq(0).children().length; i++) 
+                {
+                    totale = 0
+                    rossi = 0
+                    verdi = 0
+
+                    for (var j = 2; j < $('tr').length; j++) 
+                    {
+                        var classe = $('tr').eq(j).children().eq(i).attr("class")
+                        if (classe == "worst") 
+                        {
+                            rossi ++
+                        } else if (classe == "best") 
+                        {
+                            verdi ++
+                        }
+                    }
+                    totale = verdi - rossi
+                    $('#valutazioni').append("<td>" + totale + "</td>")
+                }
+
+                var max = Number(document.getElementById('valutazioni').children[2].innerHTML)
+                var min = Number(document.getElementById('valutazioni').children[2].innerHTML)
+                
+                $('#valutazioni').children().eq(1).nextAll().each(function () 
+                {
+                    if (max < Number(this.innerHTML)) 
+                    {
+                        max = Number(this.innerHTML)
+                    }
+                    if (min > Number(this.innerHTML)) 
+                    {
+                        min = Number(this.innerHTML)
+                    }
+                })
+                
+                $('#valutazioni').children().eq(0).nextAll().each(function () 
+                {
+                    if (max == Number(this.innerHTML)) 
+                    {
+                        $(this).attr("class", "best")
+                    }
+                    if (min >= Number(this.innerHTML)) 
+                    {
+                        $(this).attr("class", "worst")
+                    }
+                })
+            }
+
+            function evidenzia() 
+            {
+                
+                var valutazioni = Array.from(document.getElementById('valutazioni').children)
+                var pos = 1
+                valutazioni.forEach(function (item, i) 
+                {
+                    if ($(item).attr("class") == "best")
+                    {
+                        $('tr').eq(pos).children().eq(i).attr("class", "best")
+                        $('tr').eq(pos).children().eq(i).children().attr("class", "best")
+                        $('tr').eq(pos).children().eq(i).children().children().attr("class", "best")
+                    }
+                    if ($(item).attr("class") == "worst")
+                    {
+                        $('tr').eq(pos).children().eq(i).attr("class", "worst")
+                        $('tr').eq(pos).children().eq(i).children().attr("class", "worst")
+                        $('tr').eq(pos).children().eq(i).children().children().attr("class", "worst")
+                    }
+                })
+            }
+
+        </script>
+    </head>
+    <body>
+        <table border="1">
+            <tr id="intestazione">
+                <td>MODELLO:</td>
+                <td>
+                    Asus X550A30
+                </td>
+                <td>
+                    MacBook Pro 16" M1 Pro
+                </td>
+                <td>
+                    Asus ProArt StudioBook 16 OLED W7600H3A-L2002X
+                </td>
+                <td>
+                    Asus ROG Strix Scar 15 G533QR-HF022T
+                </td>
+                <td>
+                    Asus ROG Strix G17 G713IE-HX021W
+                </td>
+                <td>
+                    Dell Inspiron 16 Plus
+                </td>
+                <td>
+                    PCspecialist
+                </td>
+                <td>
+                    Dell Precision 3560
+                </td>
+                <td>
+                    Lenovo legion 5i 15
+                </td>
+                <td>
+                    Acer Aspire 5 Notebook
+                </td>
+            </tr>
+            <tr>
+                <td>IMMAGINE:</td>
+                <td>
+                    <img src="img/asus.png">
+                </td>
+                <td>
+                    <a href="https://www.apple.com/it/shop/buy-mac/macbook-pro/16%22-grigio-siderale-cpu-10-core-gpu-16-core-1tb">
+                        <img src="img/macbookpro.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.nexths.it/Products/details/sku/W7600H3A-L2002X">
+                        <img src="img/proart.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.nexths.it/Products/details/sku/G533QR-HF022T">
+                        <img src="img/rog15.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.nexths.it/Products/details/sku/G713IE-HX021W">
+                        <img src="img/rog.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.dell.com/it-it/shop/notebook-dell/inspiron-16-plus/spd/inspiron-16-7610-laptop/cn76101">
+                        <img src="img/dell16+.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.pcspecialist.it/notebook/elimina-pro-ii-15/">
+                        <img src="img/pcs.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.dell.com/it-it/work/shop/workstation-con-certificazione-e-ottimizzazione-da-parte-di-isv/precision-3560/spd/precision-15-3560-laptop/s009p3560w11it_vi">
+                        <img src="img/dell.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.lenovo.com/it/it/laptops/legion-laptops/legion-5-series/Legion-5i-Gen-6-15%27%27-Intel/p/82JHCTO1WWITIT0/customize?">
+                        <img src="img/lenovo.png">
+                    </a>
+                </td>
+                <td>
+                    <a href="https://store.acer.com/it-it/acer-aspire-5-notebook-a515-44-argento-nx-hw4et-007?internal_source=serp&internal_medium=cta&internal_campaign=AcerBoost_Search&internal_content=NX.HW4ET.007">
+                        <img src="img/acer.png">
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>CPU:</td>
+                <td class="worst">Intel® Core™ i5-3337U (2 core), 2,70 GHz</td>
+                <td class="best">Chip Apple M1 Pro con CPU (10 core)</td>
+                <td class="best">Intel® Core™ i7-11800H (8 core), 4,60 GHz</td>
+                <td class="best">AMD Ryzen™ 9 5900HX (8 core), 4,60 GHz</td>
+                <td>AMD Ryzen™ 7 4800H (8 core), 4.20 GHz</td>
+                <td class="best">Intel® Core™ i7 11800H (8 core), 4,60 GHz</td>
+                <td class="best">Intel® Core™ i7 11800H (8 core), 4,60 GHz</td>
+                <td>Intel® Core™ i7-1165G7 (4 core), 4,70 GHz</td>
+                <td>Intel® Core™ i7-11600H (6 core), 4,60 GHz</td>
+                <td class="worst">AMD Ryzen™ 7 4700U (8 core), 4,1GHz </td>
+            </tr>
+            <tr>
+                <td>RAM:</td>
+                <td class="worst">8 GB (4x2), 800 MHz, DDR3</td>
+                <td class="best">32 GB, memoria unificata</td>
+                <td class="best">32 GB (16x2), 2666 MHz, DDR4</td>
+                <td>16 GB (8x2), 3200 MHz, DDR4</td>
+                <td>16 GB (16x1), 3200 MHz, DDR4</td>
+                <td>16 GB (8x2), 3200 MHz, DDR4</td>
+                <td>16 GB (8x2), 2933 MHz, DDR4</td>
+                <td>16 GB (16x1), 3200 MHz, DDR4</td>
+                <td>16 GB (8x2), 3200 MHz, DDR4</td>
+                <td class="worst">16 GB, 2400 MHz, DDR4</td>
+            </tr>
+            <tr>
+                <td>SCHEDA VIDEO:</td>
+                <td class="worst">NVIDIA® GeForce® 720M (2GB DDR3)</td>
+                <td class="best">GPU 16‑core (memoria unificata)</td>
+                <td class="best">NVIDIA® RTX™ A3000 (6GB DDR6)</td>
+                <td class="best">NVIDIA® GeForce RTX™ 3070 (8GB DDR6)</td>
+                <td>NVIDIA® GeForce® RTX™ 3050 Ti (4GB DDR6)</td>
+                <td>NVIDIA® GeForce® RTX™ 3050 (4GB DDR6)</td>
+                <td>NVIDIA® GeForce® GTX™ 1650 (4GB DDR6)</td>
+                <td>NVIDIA® T500 (2GB DDR6)</td>
+                <td class="best">NVIDIA® GeForce® RTX™ 3060 (6GB DDR6)</td>
+                <td class="worst">AMD Radeon™ (memoria condivisa)</td>
+            </tr>
+            <tr>
+                <td>ARCHIVIAZIONE:</td>
+                <td>512 GB SSD</td>
+                <td class="best">1 TB SSD</td>
+                <td class="best">1 TB SSD</td>
+                <td class="best">1 TB SSD</td>
+                <td>512 GB SSD</td>
+                <td>512 GB SSD</td>
+                <td class="best">1 TB SSD</td>
+                <td>512 GB SSD</td>
+                <td>512 GB SSD</td>
+                <td>512 GB SSD</td>
+            </tr>
+            <tr>
+                <td>DISPLAY:</td>
+                <td class="worst">HD 15,6", 60Hz</td>
+                <td class="best">~4k 16", 120 Hz</td>
+                <td class="best">4k 16", 60Hz, OLED</td>
+                <td class="best">FHD 15,6", 300Hz</td>
+                <td>FHD 17,3", 144Hz</td>
+                <td>FHD 16", 60Hz</td>
+                <td>FHD 15,6", 144 Hz</td>
+                <td class="worst">FHD 15,6", 60 Hz</td>
+                <td>FHD 15,6", 120 Hz</td>
+                <td class="worst">FHD 15,6"</td>
+            </tr>
+            <tr>
+                <td>ANTIRIFLESSO:</td>
+                <td>No</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>BATTERIA:</td>
+                <td>34 Wh</td>
+                <td>99,6 Wh</td>
+                <td>4 celle 90 Wh</td>
+                <td>4 celle 90 Wh</td>
+                <td>4 celle 90 Wh</td>
+                <td>6 celle 86 Wh</td>
+                <td>2 Batterie 49 Wh</td>
+                <td>4 celle 63 Wh</td>
+                <td>4 celle 60 Wh</td>
+                <td>3 celle 48 Wh</td>
+            </tr>
+            <tr>
+                <td>DURATA MAX BATTERIA:</td>
+                <td class="worst">50 min</td>
+                <td class="best">9 h 30 min</td>
+                <td>7 h</td>
+                <td>8 h</td>
+                <td>8 h</td>
+                <td class="best">11 h</td>
+                <td>?</td>
+                <td class="worst">3 h 30 min</td>
+                <td class="worst">3 h</td>
+                <td class="best">9 h 30 min</td>
+            </tr>
+            <tr>
+                <td>PORTE USB:</td>
+                <td class="worst">x1(3.0), x1(2.0)</td> <!--2 usb-->
+                <td class="worst">x3(C)</td> <!--3 C-->
+                <td class="best">x2(3.2), x2(C)</td> <!--2 usb + 2C-->
+                <td class="best">x3(3.2), x1(C)</td> <!--3 usb + C-->
+                <td>x4(3.2)</td> <!--4 usb-->
+                <td class="worst">x2(3.2), x1(C)</td> <!--2 usb + C-->
+                <td>x2(3.2), x1(2.0), x1(C)</td> <!--3 usb + C-->
+                <td class="worst">x2(3.2), x2(C)</td> <!--2 usb + 2C-->
+                <td class="best">x5(3.2), x1(C)</td> <!--5 usb + C-->
+                <td>x2(3.2), x1(2.0), x2(C)</td> <!--3 usb + 2C-->
+            </tr>
+            <tr>
+                <td>ALIMENTATORE:</td>
+                <td>CA 65 W</td>
+                <td>USB type-C 140 W</td>
+                <td>CA 240 W</td>
+                <td>CA 240 W</td>
+                <td>CA 100-240 W</td>
+                <td>CA 64 W</td>
+                <td>CA 120 W</td>
+                <td>CA 130 W</td>
+                <td>CA 300 W</td>
+                <td>CA 45 W</td>
+            </tr>
+            <tr>
+                <td>TASTIERA ILLUMINATA:</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+            </tr>
+            <tr>
+                <td>TASTIERINO NUMERICO:</td>
+                <td>Sì</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+            </tr>
+            <tr>
+                <td>PORTA ETHERNET:</td>
+                <td>Sì</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>No</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+                <td>Sì</td>
+            </tr>
+            <tr>
+                <td>LETTORE SD:</td>
+                <td>Sì, SD</td>
+                <td>Sì, SD</td>
+                <td>Sì, SD</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Sì, SD</td>
+                <td>Sì, SD</td>
+                <td>Sì, microSD</td>
+                <td>No</td>
+                <td>No</td>
+            </tr>
+            <tr id="trPrezzi">
+                <td>PREZZO: </td>
+                <td>-</td>
+                <td class="worst">3900 €</td>
+                <td>2500 €</td>
+                <td>2300 €</td>
+                <td>1300 €</td>
+                <td>1469 €</td>
+                <td>1359 €</td>
+                <td>1493 €</td>
+                <td>1789 €</td>
+                <td class="best">1000 €</td>
+            </tr>
+        </table>
+    </body>
+</html>
