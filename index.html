@@ -26,28 +26,28 @@
         <script src="script/jquerymin.js"></script>
         <script>
 
-            $(document).ready(function () 
+            $(document).ready(function ()
             {
-                $('img').mouseover(function () 
+                $('img').mouseover(function ()
                 {
                     $(this).animate({ "width": "200px" }, 100)
                 })
 
-                $('img').mouseleave(function () 
+                $('img').mouseleave(function ()
                 {
                     $(this).animate({ "width": "100px" }, 100)
                 })
 
                 $('#intestazione').children().css("backgroundColor", "white")
                 $('#intestazione').children().css("color", "black")
-                
-                $('td').each(function () 
+
+                $('td').each(function ()
                 {
-                    if (this.innerHTML.startsWith("Sì")) 
+                    if (this.innerHTML.startsWith("Sì"))
                     {
                         $(this).attr("class","best")
                     }
-                    else if (this.innerHTML.startsWith("No")) 
+                    else if (this.innerHTML.startsWith("No"))
                     {
                         $(this).attr("class","worst")
                     }
@@ -72,7 +72,7 @@
                     if(i>1)
                     {
                         prezzi.push((parseInt(item.innerHTML) / 1.22).toFixed(2))
-                    } 
+                    }
                 })
 
                 var nuovoTr = document.createElement('tr')
@@ -101,28 +101,28 @@
                 $('table').append(nuovoTr)
             }
 
-            function calcolaTotali() 
+            function calcolaTotali()
             {
-                
+
                 $('table').append('<tr id="valutazioni"><td>VALUTAZIONE:</td></tr>')
-                
+
                 var totale = 0
                 var verdi = 0
                 var rossi = 0
 
-                for (var i = 1; i < $('tr').eq(0).children().length; i++) 
+                for (var i = 1; i < $('tr').eq(0).children().length; i++)
                 {
                     totale = 0
                     rossi = 0
                     verdi = 0
 
-                    for (var j = 2; j < $('tr').length; j++) 
+                    for (var j = 2; j < $('tr').length; j++)
                     {
                         var classe = $('tr').eq(j).children().eq(i).attr("class")
-                        if (classe == "worst") 
+                        if (classe == "worst")
                         {
                             rossi ++
-                        } else if (classe == "best") 
+                        } else if (classe == "best")
                         {
                             verdi ++
                         }
@@ -133,38 +133,38 @@
 
                 var max = Number(document.getElementById('valutazioni').children[2].innerHTML)
                 var min = Number(document.getElementById('valutazioni').children[2].innerHTML)
-                
-                $('#valutazioni').children().eq(1).nextAll().each(function () 
+
+                $('#valutazioni').children().eq(1).nextAll().each(function ()
                 {
-                    if (max < Number(this.innerHTML)) 
+                    if (max < Number(this.innerHTML))
                     {
                         max = Number(this.innerHTML)
                     }
-                    if (min > Number(this.innerHTML)) 
+                    if (min > Number(this.innerHTML))
                     {
                         min = Number(this.innerHTML)
                     }
                 })
-                
-                $('#valutazioni').children().eq(0).nextAll().each(function () 
+
+                $('#valutazioni').children().eq(0).nextAll().each(function ()
                 {
-                    if (max == Number(this.innerHTML)) 
+                    if (max == Number(this.innerHTML))
                     {
                         $(this).attr("class", "best")
                     }
-                    if (min >= Number(this.innerHTML)) 
+                    if (min >= Number(this.innerHTML))
                     {
                         $(this).attr("class", "worst")
                     }
                 })
             }
 
-            function evidenzia() 
+            function evidenzia()
             {
-                
+
                 var valutazioni = Array.from(document.getElementById('valutazioni').children)
                 var pos = 1
-                valutazioni.forEach(function (item, i) 
+                valutazioni.forEach(function (item, i)
                 {
                     if ($(item).attr("class") == "best")
                     {
@@ -367,7 +367,7 @@
                 <td>7 h</td>
                 <td>8 h</td>
                 <td>8 h</td>
-                <td class="best">11 h</td>
+                <td>8 h</td>
                 <td>?</td>
                 <td class="worst">3 h 30 min</td>
                 <td class="worst">3 h</td>
